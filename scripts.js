@@ -23,46 +23,49 @@ let oscillators = {};
 let oscillatorsPlaying = {};
 
 let scale = [];
-for (let i = 0; i < 4; i++) {
-    scale = scale.concat(
-        majorScale.map(offset => startingNote + offset + i * 12)
-    );
-}
-scale.push(startingNote + 48);
-
-let notesHTML = "";
-for (const note of scale) {
-    notesHTML +=
-        '<div class="note" id="' +
-        note +
-        '">' +
-        pitchToNote[((note % 12) + 12) % 12] +
-        "</div>";
-}
-
-keyboard.innerHTML = notesHTML;
-
-for (const note of scale) {
-    oscillators[note] = newOscillatorFromNote(note);
-    oscillatorsPlaying[note] = false;
-    const noteHTML = document.getElementById(note);
-    noteHTML.addEventListener("mousedown", function (e) {
-        onNotePressed(note);
-    });
-}
 document.addEventListener("mouseup", function (e) {
-    onMouseReleased();
+    stopAllNotes(0.1);
 });
 
-function onNotePressed(note) {
+function generateScale() {
+    for (let i = 0; i < 4; i++) {
+        scale = scale.concat(
+            majorScale.map(offset => startingNote + offset + i * 12)
+        );
+    }
+    scale.push(startingNote + 48);
+
+    let notesHTML = "";
+    for (const note of scale) {
+        notesHTML +=
+            '<div class="note" id="' +
+            note +
+            '">' +
+            pitchToNote[((note % 12) + 12) % 12] +
+            "</div>";
+    }
+
+    keyboard.innerHTML = notesHTML;
+
+    for (const note of scale) {
+        oscillators[note] = newOscillatorFromNote(note);
+        oscillatorsPlaying[note] = false;
+        const noteHTML = document.getElementById(note);
+        noteHTML.addEventListener("mousedown", function (e) {
+            playNote(note);
+        });
+    }
+}
+
+function playNote(note) {
     oscillators[note].start();
     oscillatorsPlaying[note] = true;
 }
 
-function onMouseReleased() {
+function stopAllNotes(delay = 0) {
     for (const note of scale) {
         if (oscillatorsPlaying[note]) {
-            oscillators[note].stop(audioContext.currentTime + 0.1);
+            oscillators[note].stop(audioContext.currentTime + delay);
             oscillators[note] = newOscillatorFromNote(note);
             oscillatorsPlaying[note] = false;
         }
@@ -79,3 +82,5 @@ function newOscillatorFromNote(note) {
     oscillator.connect(audioContext.destination);
     return oscillator;
 }
+
+generateScale();

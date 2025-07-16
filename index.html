@@ -1,11 +1,33 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Music Thingy</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
 
         <link rel="stylesheet" href="styles.css" />
     </head>
 
     <body>
+        <div id="options">
+            <div class="option">
+                <h2>Key:</h2>
+                <select id="key" title="Key">
+                    <option value="-21">C</option>
+                </select>
+                <select id="major-minor" title="Major or Minor">
+                    <option value="major">Major</option>
+                </select>
+            </div>
+            <div class="option">
+                <h2>Sound Type:</h2>
+                <select id="sound-type" title="Sound Type">
+                    <option value="sawtooth">Sawtooth</option>
+                </select>
+            </div>
+        </div>
+
         <div id="keyboard"></div>
 
         <script src="scripts.js"></script>

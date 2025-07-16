@@ -1,9 +1,45 @@
+html,
+body {
+    height: 100%;
+}
+
 body {
     margin: 0px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     background-color: #434453;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+h2 {
+    color: cyan;
+    text-align: center;
+    font-size: 20pt;
+    font-weight: normal;
+}
+
+select {
+    border: 2px solid cyan;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: transparent;
+    color: cyan;
+    font-size: 15pt;
+}
+
+select:hover {
+    background-color: rgba(0, 255, 255, 0.2);
+}
+
+#options {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.option {
+    text-align: center;
 }
 
 #keyboard {
@@ -22,6 +58,7 @@ body {
     border-radius: 7px;
     color: cyan;
     text-align: center;
+    -webkit-user-select: none;
     user-select: none;
     box-shadow: 0px 0px 5px cyan inset;
     transition: font-size 0.1s;
