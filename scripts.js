@@ -1,4 +1,7 @@
 const keyboard = document.getElementById("keyboard");
+const keySelect = document.getElementById("key");
+const majorMinorSelect = document.getElementById("major-minor");
+const soundTypeSelect = document.getElementById("sound-type");
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -17,20 +20,21 @@ const pitchToNote = {
     11: "G#",
 };
 const majorScale = [0, 2, 4, 5, 7, 9, 11];
-const startingNote = -21;
+const minorScale = [0, 2, 3, 5, 7, 8, 10];
 
+let startingNote = -21;
+let scaleOffsets = majorScale;
+let soundType = "sawtooth";
+
+let scale = [];
 let oscillators = {};
 let oscillatorsPlaying = {};
 
-let scale = [];
-document.addEventListener("mouseup", function (e) {
-    stopAllNotes(0.1);
-});
-
 function generateScale() {
+    scale = [];
     for (let i = 0; i < 4; i++) {
         scale = scale.concat(
-            majorScale.map(offset => startingNote + offset + i * 12)
+            scaleOffsets.map(offset => startingNote + offset + i * 12)
         );
     }
     scale.push(startingNote + 48);
@@ -74,7 +78,7 @@ function stopAllNotes(delay = 0) {
 
 function newOscillatorFromNote(note) {
     const oscillator = audioContext.createOscillator();
-    oscillator.type = "sawtooth";
+    oscillator.type = soundType;
     oscillator.frequency.setValueAtTime(
         440 * 2 ** (note / 12),
         audioContext.currentTime
@@ -82,5 +86,28 @@ function newOscillatorFromNote(note) {
     oscillator.connect(audioContext.destination);
     return oscillator;
 }
+
+document.addEventListener("mouseup", function (e) {
+    stopAllNotes(0.1);
+});
+
+keySelect.addEventListener("change", function (e) {
+    startingNote = Number(keySelect.value);
+    generateScale();
+})
+
+majorMinorSelect.addEventListener("change", function (e) {
+    if (majorMinorSelect.value === "major") {
+        scaleOffsets = majorScale;
+    } else {
+        scaleOffsets = minorScale;
+    }
+    generateScale();
+});
+
+soundTypeSelect.addEventListener("change", function (e) {
+    soundType = soundTypeSelect.value;
+    generateScale();
+});
 
 generateScale();
