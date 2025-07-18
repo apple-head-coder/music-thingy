@@ -44,15 +44,14 @@ select:hover {
 #keyboard {
     width: 100%;
     height: 200px;
-    margin: 50px;
+    margin: 20px 50px;
     display: flex;
 }
 
 .note {
     width: 100%;
-    height: 44px;
+    height: 194px;
     margin: 1px;
-    padding: 150px 0px 0px 0px;
     border: 3px solid cyan;
     border-radius: 7px;
     color: cyan;
@@ -71,3 +70,53 @@ select:hover {
 .note:active {
     background-color: rgba(0, 255, 255, 0.7);
 }
+
+.note img {
+    width: min(calc(100% - 10px), 50px);
+    aspect-ratio: 1;
+    margin: 60px auto;
+    display: block;
+    border-radius: 5px;
+    border: none;
+}
+
+#components {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#components > * {
+    margin: 0px 10px;
+    padding: 20px;
+    border-radius: 10px;
+    color: cyan;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#component-panel {
+    list-style-type: none;
+}
+
+#component-panel li {
+    margin: 10px 0px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 3px solid transparent;
+}
+
+#component-panel li.selected {
+    border: 3px solid cyan;
+}
+
+#component-panel li:hover {
+    border: 3px solid rgba(0, 255, 255, 0.5);
+}
+
+#component-panel img {
+    width: 48px;
+    height: 48px;
+    border-radius: 5px;
+    vertical-align: middle;
+}
+

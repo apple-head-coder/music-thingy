@@ -44,7 +44,7 @@ function generateScale() {
         notesHTML +=
             '<div class="note" id="' +
             note +
-            '">' +
+            '"><img src="assets/blank.svg" draggable="false" />' +
             pitchToNote[((note % 12) + 12) % 12] +
             "</div>";
     }
