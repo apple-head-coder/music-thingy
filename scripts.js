@@ -5,6 +5,17 @@ const soundTypeSelect = document.getElementById("sound-type");
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+const Components = {
+    None: "none",
+    RightShifter: "right-shifter",
+    LeftShifter: "left-shifter",
+};
+const componentImages = {
+    [Components.None]: "assets/blank.svg",
+    [Components.RightShifter]: "assets/right-shifter.svg",
+    [Components.LeftShifter]: "assets/left-shifter.svg",
+};
+
 const pitchToNote = {
     0: "A",
     1: "A#",
@@ -26,6 +37,8 @@ let startingNote = -21;
 let scaleOffsets = majorScale;
 let soundType = "sawtooth";
 
+let currentSelectedComponent = "";
+
 let scale = [];
 let oscillators = {};
 let oscillatorsPlaying = {};
@@ -33,9 +46,7 @@ let oscillatorsPlaying = {};
 function generateScale() {
     scale = [];
     for (let i = 0; i < 4; i++) {
-        scale = scale.concat(
-            scaleOffsets.map(offset => startingNote + offset + i * 12)
-        );
+        scale = scale.concat(scaleOffsets.map(offset => startingNote + offset + i * 12));
     }
     scale.push(startingNote + 48);
 
@@ -55,8 +66,11 @@ function generateScale() {
         oscillators[note] = newOscillatorFromNote(note);
         oscillatorsPlaying[note] = false;
         const noteHTML = document.getElementById(note);
-        noteHTML.addEventListener("mousedown", function (e) {
+        noteHTML.addEventListener("mousedown", function () {
             playNote(note);
+            if (currentSelectedComponent) {
+                img = noteHTML.querySelector("img").src = componentImages[currentSelectedComponent];
+            }
         });
     }
 }
@@ -79,24 +93,21 @@ function stopAllNotes(delay = 0) {
 function newOscillatorFromNote(note) {
     const oscillator = audioContext.createOscillator();
     oscillator.type = soundType;
-    oscillator.frequency.setValueAtTime(
-        440 * 2 ** (note / 12),
-        audioContext.currentTime
-    );
+    oscillator.frequency.setValueAtTime(440 * 2 ** (note / 12), audioContext.currentTime);
     oscillator.connect(audioContext.destination);
     return oscillator;
 }
 
-document.addEventListener("mouseup", function (e) {
+document.addEventListener("mouseup", function () {
     stopAllNotes(0.1);
 });
 
-keySelect.addEventListener("change", function (e) {
+keySelect.addEventListener("change", function () {
     startingNote = Number(keySelect.value);
     generateScale();
-})
+});
 
-majorMinorSelect.addEventListener("change", function (e) {
+majorMinorSelect.addEventListener("change", function () {
     if (majorMinorSelect.value === "major") {
         scaleOffsets = majorScale;
     } else {
@@ -105,9 +116,17 @@ majorMinorSelect.addEventListener("change", function (e) {
     generateScale();
 });
 
-soundTypeSelect.addEventListener("change", function (e) {
+soundTypeSelect.addEventListener("change", function () {
     soundType = soundTypeSelect.value;
     generateScale();
+});
+
+document.querySelectorAll("#component-panel li").forEach(li => {
+    li.addEventListener("click", function () {
+        document.querySelector("#component-panel li.selected").classList.remove("selected");
+        this.classList.add("selected");
+        currentSelectedComponent = this.dataset.component;
+    });
 });
 
 generateScale();
