@@ -38,6 +38,7 @@ let scaleOffsets = majorScale;
 let soundType = "sawtooth";
 
 let currentSelectedComponent = "";
+let placedComponents = Array(29).fill(Components.None);
 
 let scale = [];
 let oscillators = {};
@@ -52,24 +53,49 @@ function generateScale() {
 
     let notesHTML = "";
     for (const note of scale) {
-        notesHTML +=
-            '<div class="note" id="' +
-            note +
-            '"><img src="assets/blank.svg" draggable="false" />' +
-            pitchToNote[((note % 12) + 12) % 12] +
-            "</div>";
+        notesHTML += `<div class="note" id="${note}">
+                          <img src="assets/blank.svg" draggable="false" />
+                          ${pitchToNote[((note % 12) + 12) % 12]}
+                      </div>`;
     }
 
     keyboard.innerHTML = notesHTML;
 
-    for (const note of scale) {
+    for (const [i, note] of scale.entries()) {
         oscillators[note] = newOscillatorFromNote(note);
         oscillatorsPlaying[note] = false;
-        const noteHTML = document.getElementById(note);
-        noteHTML.addEventListener("mousedown", function () {
+        const noteElem = document.getElementById(note);
+        const img = noteElem.querySelector("img");
+        img.src = componentImages[placedComponents[i]];
+
+        noteElem.addEventListener("mousedown", function () {
             playNote(note);
             if (currentSelectedComponent) {
-                img = noteHTML.querySelector("img").src = componentImages[currentSelectedComponent];
+                const img = noteElem.querySelector("img");
+                placedComponents[i] = currentSelectedComponent;
+                img.src = componentImages[currentSelectedComponent];
+                img.style.opacity = "1";
+            }
+        });
+
+        noteElem.addEventListener("mouseenter", function () {
+            if (currentSelectedComponent) {
+                const img = noteElem.querySelector("img");
+                if (currentSelectedComponent === Components.None) {
+                    img.src = componentImages[placedComponents[i]];
+                    img.style.opacity = "0.3";
+                } else {
+                    img.src = componentImages[currentSelectedComponent];
+                    img.style.opacity = "0.5";
+                }
+            }
+        });
+
+        noteElem.addEventListener("mouseleave", function () {
+            if (currentSelectedComponent) {
+                const img = noteElem.querySelector("img");
+                img.src = componentImages[placedComponents[i]];
+                img.style.opacity = "1";
             }
         });
     }
